@@ -1,17 +1,5 @@
-## nexus-iq-server
+## Cookbook for Nexus IQ Server
 
-Cookbook for Nexus IQ Server.
-
-Because this cookbook isn't public (yet) it can only be accessed by the nexus cloudformation stack via a public bucket as intermediary.
- 
-To update the cookbook run:
-
-    berks package
-
-Then upload the resulting archive to the `int-public` bucket like this:
-
-    aws s3 cp cookbooks-nnnnnnn.tar.gz s3://int-public/nexus-iq-server-cookbook.tar.gz --acl public-read
-    
 #### Usage
 
 Simply include the `nexus-iq-server` recipe wherever you would like Nexus IQ Server installed. Simply add
