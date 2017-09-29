@@ -5,7 +5,7 @@
 # Copyright:: Copyright (c) 2017-present Sonatype, Inc. Apache License, Version 2.0.
 
 config_path = node['nexus_iq_server']['conf_dir'] + '/config.yml'
-start_script = node['nexus_iq_server']['install_dir'] + '/start_nexus_iq_server.sh'
+start_script = node['nexus_iq_server']['install_dir'] + '/start-nexus-iq-server.sh'
 
 directory node['nexus_iq_server']['conf_dir'] do
   owner 'root'
@@ -39,7 +39,7 @@ template config_path do
 end
 
 template start_script do
-  source 'start_nexus_iq_server.sh.erb'
+  source 'start-nexus-iq-server.sh.erb'
   owner 'root'
   group 'root'
   mode '0755'

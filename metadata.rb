@@ -17,7 +17,7 @@ supports 'ubuntu', '>= 16.04'
 supports 'centos', '>= 7.3'
 
 recipe 'nexus_iq_server::default', 'Installs Nexus IQ Server and starts it as systemd service.'
-recipe 'nexus_iq_server::docker', 'Installs Nexus IQ Server. Instead of a systemd service start_nexus_iq_server.sh is provided in install_dir.'
+recipe 'nexus_iq_server::docker', 'Installs Nexus IQ Server. Instead of a systemd service start-nexus-iq-server.sh is provided in install_dir.'
 
 depends 'java', '~> 1.50'
 depends 'tar', '~> 2.1'
