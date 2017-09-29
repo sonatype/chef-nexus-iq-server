@@ -1,10 +1,10 @@
 #
-# Cookbook:: nexus-iq-server
+# Cookbook:: nexus_iq_server
 # Recipe:: default
 #
 # Copyright:: Copyright (c) 2017-present Sonatype, Inc. Apache License, Version 2.0.
 
 include_recipe 'java'
-include_recipe 'nexus-iq-server::download'
-include_recipe 'nexus-iq-server::configure'
-include_recipe 'nexus-iq-server::systemd'
+include_recipe 'nexus_iq_server::download'
+include_recipe 'nexus_iq_server::configure'
+include_recipe 'nexus_iq_server::systemd'

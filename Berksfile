@@ -1,5 +1,5 @@
 #
-# Cookbook:: nexus-iq-server
+# Cookbook:: nexus_iq_server
 #
 # Copyright:: Copyright (c) 2017-present Sonatype, Inc. Apache License, Version 2.0.
 
