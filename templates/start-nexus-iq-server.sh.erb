@@ -4,9 +4,9 @@
 #
 
 <%
-    nexus_iq_jar = node['nexus-iq-server']['install_dir'] + "/nexus-iq-server-#{node['nexus-iq-server']['version']}.jar"
-    nexus_iq_config = node['nexus-iq-server']['conf_dir'] + '/config.yml'
+    nexus_iq_jar = node['nexus_iq_server']['install_dir'] + "/nexus-iq-server-#{node['nexus_iq_server']['version']}.jar"
+    nexus_iq_config = node['nexus_iq_server']['conf_dir'] + '/config.yml'
 %>
 
-cd <%= node['nexus-iq-server']['install_dir'] %>
+cd <%= node['nexus_iq_server']['install_dir'] %>
 exec /usr/bin/java -jar <%= nexus_iq_jar  %> server <%= nexus_iq_config  %>
