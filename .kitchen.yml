@@ -1,23 +1,26 @@
 ---
-# Copyright:: Copyright (c) 2017-present Sonatype, Inc. Apache License, Version 2.0.
 driver:
-  name: vagrant
-  network:
-    - ["private_network", {ip: "192.168.35.35"}]
+  name: ec2
+  region: us-east-1
+  instance_type: t2.large
+  aws_ssh_key_id: jcava-dev
+  security_group_ids: ["sg-7650ac0c", "sg-e964bf98"]
+
+transport:
+  ssh_key: ~/.ec2/jcava-dev.pem
+  username: centos
 
 provisioner:
-  name: chef_zero
-  # You may wish to disable always updating cookbooks in CI or other testing environments.
-  # For example:
-  #   always_update_cookbooks: <%= !ENV['CI'] %>
+  name: chef_solo
   always_update_cookbooks: true
 
 verifier:
   name: inspec
 
 platforms:
-  - name: ubuntu-16.04
-  - name: centos-7.3
+  - name: centos-7
+    driver:
+      image_id: ami-ae7bfdb8
 
 suites:
   - name: default
@@ -27,10 +30,3 @@ suites:
       inspec_tests:
         - test/smoke/default
     attributes:
-# Cache JDK locally for faster kitchen:
-#      java:
-#        jdk:
-#          '8':
-#           x86_64:
-#              url: 'http://10.0.2.2:8080/jdk-8u131-linux-x64.tar.gz'
-#              checksum: '62b215bdfb48bace523723cdbb2157c665e6a25429c73828a32f00e587301236'
