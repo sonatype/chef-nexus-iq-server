@@ -39,9 +39,6 @@ node('ubuntu-chef-zion') {
       withEnv(["PATH+GEMS=${gemInstallDirectory}/bin"]) {
         OsTools.runSafe(this, "gem install --user-install berkshelf")
         OsTools.runSafe(this, "berks package")
-        dir('build/target') {
-          OsTools.runSafe(this, "mv ../../cookbooks-*.tar.gz ${archiveName}")
-        }
       }
 
       if (currentBuild.result == 'FAILURE') {
@@ -59,21 +56,10 @@ node('ubuntu-chef-zion') {
           aws --region us-east-1 ec2 create-key-pair --key-name chef-test-key \
           | ruby -e "require 'json'; puts JSON.parse(STDIN.read)['KeyMaterial']" > ~/.ssh/chef-test-key
         """)
-
-        dir('build/target') {
-          OsTools.runSafe(this, "tar -zxvf ${archiveName}")
-        }
-
-        dir('build/target/cookbooks/nexus-iq-server') {
-          OsTools.runSafe(this, 'cp ../../../../.kitchen.yml .')
-          OsTools.runSafe(this, 'cp ../../../../Berksfile .')
-          OsTools.runSafe(this, 'cp ../../../../Berksfile.lock .')
-          OsTools.runSafe(this, 'cp ../../../../metadata.rb .')
-          OsTools.runSafe(this, 'kitchen test')
-        }
+        OsTools.runSafe(this, "kitchen test")
       } finally {
-        OsTools.runSafe(this, 'aws --region us-east-1 ec2 delete-key-pair --key-name chef-test-key')
-        OsTools.runSafe(this, 'rm -f ~/.ssh/chef-test-key')
+        OsTools.runSafe(this, "aws --region us-east-1 ec2 delete-key-pair --key-name chef-test-key")
+        OsTools.runSafe(this, "rm -f ~/.ssh/chef-test-key")
       }
 
       if (currentBuild.result == 'FAILURE') {
@@ -88,6 +74,7 @@ node('ubuntu-chef-zion') {
     }
     stage('Archive') {
       dir('build/target') {
+        OsTools.runSafe(this, "mv ../../cookbooks-*.tar.gz ${archiveName}")
         archiveArtifacts artifacts: "${archiveName}", onlyIfSuccessful: true
       }
     }
