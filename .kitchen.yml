@@ -1,13 +1,15 @@
 ---
 driver:
   name: ec2
+  aws_ssh_key_id: chef-test-key
   region: us-east-1
+  security_group_ids: ["sg-a4fc5ec1"]
+  require_chef_omnibus: true
+  subnet_id: subnet-c96f61bd
   instance_type: t2.large
-  aws_ssh_key_id: jcava-dev
-  security_group_ids: ["sg-7650ac0c", "sg-e964bf98"]
 
 transport:
-  ssh_key: ~/.ec2/jcava-dev.pem
+  ssh_key: ~/.ssh/chef-test-key
   username: centos
 
 provisioner:
