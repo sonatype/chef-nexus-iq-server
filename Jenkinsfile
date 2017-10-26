@@ -69,6 +69,8 @@ node('ubuntu-chef-zion') {
           OsTools.runSafe(this, 'cp ../../../../Berksfile .')
           OsTools.runSafe(this, 'cp ../../../../Berksfile.lock .')
           OsTools.runSafe(this, 'cp ../../../../metadata.rb .')
+          OsTools.runSafe(this, 'ls -la')
+          OsTools.runSafe(this, 'ls -la recipes')
           OsTools.runSafe(this, 'kitchen test')
         }
       } finally {
