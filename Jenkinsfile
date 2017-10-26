@@ -62,25 +62,13 @@ node('ubuntu-chef-zion') {
 
         dir('build/target') {
           OsTools.runSafe(this, "tar -zxvf ${archiveName}")
-          OsTools.runSafe(this, 'pwd')
-          OsTools.runSafe(this, 'ls -la')
         }
-
-        OsTools.runSafe(this, 'pwd')
-        OsTools.runSafe(this, 'ls -la')
-        OsTools.runSafe(this, 'ls -la build')
-        OsTools.runSafe(this, 'ls -la build/target')
-        OsTools.runSafe(this, 'ls -la build/target/cookbooks')
-        OsTools.runSafe(this, 'ls -la build/target/cookbooks/nexus_iq_server')
 
         dir('build/target/cookbooks/nexus_iq_server') {
           OsTools.runSafe(this, 'cp ../../../../.kitchen.yml .')
           OsTools.runSafe(this, 'cp ../../../../Berksfile .')
           OsTools.runSafe(this, 'cp ../../../../Berksfile.lock .')
           OsTools.runSafe(this, 'cp ../../../../metadata.rb .')
-          OsTools.runSafe(this, 'pwd')
-          OsTools.runSafe(this, 'ls -la')
-          OsTools.runSafe(this, 'ls -la recipes')
           OsTools.runSafe(this, 'kitchen test')
         }
       } finally {
