@@ -1,0 +1,90 @@
+Created a new ami: ami-82c463f8 - zion-agent-ubuntu-chef-x64
+Created a new role: arn:aws:iam::818665683636:role/aws-chef-kitchen-ec2
+
+aws sts assume-role --role-arn arn:aws:iam::233747045000:role/admin --role-session-name jcava-dev-test --output text --query 'Credentials.[SecretAccessKey,AccessKeyId,SessionToken]'
+
+export AWS_ACCESS_KEY_ID=ASIAJCJP74S2E7INV5IA
+export AWS_SECRET_ACCESS_KEY=e8OyYf427NRGF+WafSJT/NTxSZUDx7/apRZ1ooql
+export AWS_SESSION_TOKEN="FQoDYXdzEE4aDBjG/emIPEB8jnPa2yLtATBlbNeMY0wYvmypmqu7vMIeHIM0Tcu5k/EsvUHybIp2DlUl+IvImYapTiPNXQQIaETeC/PcW75lwVhOJAdyAQ5rkDtQiyLLdQGpE7H8wSOzVpkpDwXiBxyExM53f66GrPvPF7p1020C/4dzRFedbYLev3bxNg0lI6Ube9X9UaANruwkJjDJlAgMsnOzQjgpbjGLvTEotqxBkD87N22m6yKefMgmoKZ9kWmFz6fWUc7AERRUGFW/dZIBu9v9lprs3yncAEzqmZMJ1QoNT3CfspUO/Fz2QfY3JUwFyJFGEt1iGHAMZSuwWgcitVGQBCjvgMTPBQ=="
+
+Setup Ubuntu Zion for Chef Recipe Testing:
+
+$ curl -O https://packages.chef.io/files/stable/chefdk/2.3.4/ubuntu/16.04/chefdk_2.3.4-1_amd64.deb
+$ sudo dpkg -i chefdk_2.3.4-1_amd64.deb
+
+$ aws configure
+
+
+# Permission for ami
+arn:aws:iam::aws:policy/AmazonEC2FullAccess
+
+$ git clone https://github.com/sonatype/chef-nexus-iq-server.git
+
+
+$ aws --region us-east-1 ec2 create-key-pair --key-name chef-test-key | ruby -e "require 'json'; puts JSON.parse(STDIN.read)['KeyMaterial']" > ~/.ssh/chef-test-key
+
+$ aws --region us-east-1 ec2 delete-key-pair --key-name chef-test-key
+$ rm -f ~/.ssh/chef-test-key
+
+History:
+
+    1  tune2fs -i /dev/xvda1
+    2  tune2fs /dev/xvda1
+    3  suod touch /forcefsck
+    4  sudo touch /forcefsck
+    5  reboot
+    6  sudo reboot
+    7  df -h
+    8  mount
+    9  curl -O https://packages.chef.io/files/stable/chefdk/2.3.4/ubuntu/16.04/chefdk_2.3.4-1_amd64.deb
+   10  sudo dpkg -i chefdk_2.3.4-1_amd64.deb
+   11  git clone https://github.com/sonatype/chef-nexus-iq-server.git
+   12  cd chef-nexus-iq-server/
+   13  ls
+   14  vi .kitchen.yml
+   15  git branch -r
+   16  git checkout INT-377-Jenkinsfile
+   17  aws --region us-east-1 ec2 create-key-pair --key-name jcava-dev-test | ruby -e "require 'json'; puts JSON.parse(STDIN.read)['KeyMaterial']" > ~/.ssh/jcava-dev-test
+   33  kitchen test
+   34  history
+
+ubuntu@ip-10-21-1-8:~/chef-nexus-iq-server$ cat .kitchen.yml
+---
+driver:
+  name: ec2
+  aws_ssh_key_id: chef-test-key
+  region: us-east-1
+  security_group_ids: ["sg-a4fc5ec1"]
+  require_chef_omnibus: true
+  subnet_id: subnet-c96f61bd
+  instance_type: t2.large
+  tags:
+    Name: chef-test
+
+transport:
+  ssh_key: ~/.ssh/chef-test-key
+  username: centos
+
+provisioner:
+  name: chef_solo
+  always_update_cookbooks: true
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: centos-7
+    driver:
+      image_id: ami-ae7bfdb8
+
+suites:
+  - name: default
+    run_list:
+      - recipe[nexus_iq_server::default]
+    verifier:
+      inspec_tests:
+        - test/smoke/default
+    attributes:
+
+
+

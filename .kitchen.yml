@@ -1,17 +1,8 @@
 ---
 driver:
-  name: ec2
-  aws_ssh_key_id: chef-test-key
-  region: us-east-1
-  security_group_ids: ["sg-a4fc5ec1"]
-  require_chef_omnibus: true
-  subnet_id: subnet-c96f61bd
-  instance_type: t2.large
-  tags:
-    Name: chef-test
-
-transport:
-  ssh_key: ~/.ssh/chef-test-key
+  name: vagrant
+  network:
+    - ["private_network", {ip: "192.168.35.35"}]
 
 provisioner:
   name: chef_solo
@@ -22,15 +13,6 @@ verifier:
 
 platforms:
   - name: ubuntu-16.04
-    driver:
-      image_id: ami-1d4e7a66
-    transport:
-      username: ubuntu
-  - name: centos-7.3
-    driver:
-      image_id: ami-ae7bfdb8
-    transport:
-      username: centos
 
 suites:
   - name: default
