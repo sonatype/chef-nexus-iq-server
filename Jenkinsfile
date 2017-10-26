@@ -51,6 +51,16 @@ node('ubuntu-chef-zion') {
     stage('Test') {
       gitHub.statusUpdate commitId, 'pending', 'test', 'Tests are running'
 
+      try {
+        OsTools.runSafe(this, """
+          aws --region us-east-1 ec2 create-key-pair --key-name chef-test-key | ruby -e "require 'json'; puts JSON.parse(STDIN.read)['KeyMaterial']" > ~/.ssh/chef-test-key
+        """)
+        OsTools.runSafe(this, "kitchen test")
+      } finally {
+        OsTools.runSafe(this, "aws --region us-east-1 ec2 delete-key-pair --key-name chef-test-key")
+        OsTools.runSafe(this, "rm -f ~/.ssh/chef-test-key")
+      }
+
       if (currentBuild.result == 'FAILURE') {
         gitHub.statusUpdate commitId, 'failure', 'test', 'Tests failed'
         return
