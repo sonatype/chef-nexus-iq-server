@@ -7,7 +7,7 @@
 import com.sonatype.jenkins.pipeline.GitHub
 import com.sonatype.jenkins.pipeline.OsTools
 
-node('ubuntu-zion') {
+node('ubuntu-chef-zion') {
   def commitId, commitDate, version, imageId, apiToken
   def organization = 'sonatype',
       repository = 'chef-nexus-iq-server',
