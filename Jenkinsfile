@@ -73,7 +73,7 @@ node('ubuntu-chef-zion') {
         OsTools.runSafe(this, 'ls -la build/target/cookbooks')
         OsTools.runSafe(this, 'ls -la build/target/cookbooks/nexus-iq-server')
 
-        dir('build/target/cookbooks/nexus-iq-server') {
+        dir('build/target/cookbooks/nexus_iq_server') {
           OsTools.runSafe(this, 'cp ../../../../.kitchen.yml .')
           OsTools.runSafe(this, 'cp ../../../../Berksfile .')
           OsTools.runSafe(this, 'cp ../../../../Berksfile.lock .')
