@@ -10,7 +10,6 @@ driver:
 
 transport:
   ssh_key: ~/.ssh/chef-test-key
-  username: centos
 
 provisioner:
   name: chef_solo
@@ -23,6 +22,8 @@ platforms:
   - name: centos-7
     driver:
       image_id: ami-ae7bfdb8
+    transport:
+      username: centos
 
 suites:
   - name: default
