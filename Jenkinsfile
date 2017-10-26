@@ -62,6 +62,8 @@ node('ubuntu-chef-zion') {
 
         dir('build/target') {
           OsTools.runSafe(this, "tar -zxvf ${archiveName}")
+          OsTools.runSafe(this, 'pwd')
+          OsTools.runSafe(this, 'ls -la')
         }
 
         dir('build/target/cookbooks/nexus-iq-server') {
