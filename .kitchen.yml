@@ -7,6 +7,8 @@ driver:
   require_chef_omnibus: true
   subnet_id: subnet-c96f61bd
   instance_type: t2.large
+  tags:
+    Name: chef-test
 
 transport:
   ssh_key: ~/.ssh/chef-test-key
