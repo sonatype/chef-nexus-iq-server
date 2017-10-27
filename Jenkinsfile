@@ -60,7 +60,7 @@ node('ubuntu-chef-zion') {
       try {
         OsTools.runSafe(this, """
           aws --region us-east-1 ec2 create-key-pair --key-name ${keyPairName} \
-          | ruby -e "require 'json'; puts JSON.parse(STDIN.read)['KeyMaterial']" > ~/.ssh/chef-test-key
+          | ruby -e "require 'json'; puts JSON.parse(STDIN.read)['KeyMaterial']" > ~/.ssh/${keyPairName}
         """)
 
         dir('build/target') {
@@ -69,11 +69,10 @@ node('ubuntu-chef-zion') {
 
         dir("build/target/cookbooks/${cookbookName}") {
           OsTools.runSafe(this, "KEY_PAIR_NAME=${keyPairName} erb ../../../../.kitchen.yml.erb > .kitchen.yml")
-          OsTools.runSafe(this, 'cat .kitchen.yml')
           OsTools.runSafe(this, 'cp ../../../../Berksfile .')
           OsTools.runSafe(this, 'cp ../../../../Berksfile.lock .')
           OsTools.runSafe(this, 'cp ../../../../metadata.rb .')
-          // OsTools.runSafe(this, 'kitchen test')
+          OsTools.runSafe(this, 'kitchen test')
         }
       } finally {
         OsTools.runSafe(this, "aws --region us-east-1 ec2 delete-key-pair --key-name ${keyPairName}")
