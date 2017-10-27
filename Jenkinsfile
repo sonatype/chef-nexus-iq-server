@@ -38,8 +38,9 @@ node('ubuntu-chef-zion') {
 
       def gemInstallDirectory = getGemInstallDirectory()
       withEnv(["PATH+GEMS=${gemInstallDirectory}/bin"]) {
-        OsTools.runSafe(this, "gem install --user-install berkshelf")
-        OsTools.runSafe(this, "berks package")
+        OsTools.runSafe(this, 'gem install --user-install berkshelf')
+        OsTools.runSafe(this, 'rm cookbooks-*.tar.gz')
+        OsTools.runSafe(this, 'berks package')
         dir('build/target') {
           OsTools.runSafe(this, "mv ../../cookbooks-*.tar.gz ${archiveName}")
         }
