@@ -55,7 +55,7 @@ node('ubuntu-chef-zion') {
     stage('Test') {
       gitHub.statusUpdate commitId, 'pending', 'test', 'Tests are running'
 
-      def keyPairName = "chef-key-${UUID.randomUUID().toString().reverse().take(7).reverse()}"
+      def keyPairName = "chef-${UUID.randomUUID().toString()}"
 
       try {
         OsTools.runSafe(this, """
