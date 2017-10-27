@@ -13,7 +13,7 @@ node('ubuntu-chef-zion') {
       repository = 'chef-nexus-iq-server',
       credentialsId = 'integrations-github-api',
       archiveName = 'chef-nexus-iq-server.tar.gz',
-      cookbookName = 'nexus-iq-server'
+      cookbookName = 'nexus_iq_server'
   GitHub gitHub
 
   try {
