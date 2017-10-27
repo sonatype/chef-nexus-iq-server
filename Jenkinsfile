@@ -68,7 +68,7 @@ node('ubuntu-chef-zion') {
         }
 
         dir("build/target/cookbooks/${cookbookName}") {
-          OsTools.runSafe(this, 'cp ../../../../.kitchen.yml .')
+          OsTools.runSafe(this, "KEY_PAIR_NAME=${keyPairName} erb ../../../../.kitchen.yml.erb > .kitchen.yml")
           OsTools.runSafe(this, 'cp ../../../../Berksfile .')
           OsTools.runSafe(this, 'cp ../../../../Berksfile.lock .')
           OsTools.runSafe(this, 'cp ../../../../metadata.rb .')
