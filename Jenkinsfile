@@ -12,7 +12,8 @@ node('ubuntu-chef-zion') {
   def organization = 'sonatype',
       repository = 'chef-nexus-iq-server',
       credentialsId = 'integrations-github-api',
-      archiveName = 'chef-nexus-iq-server.tar.gz'
+      archiveName = 'chef-nexus-iq-server.tar.gz',
+      cookbookName = 'nexus-iq-server'
   GitHub gitHub
 
   try {
@@ -54,9 +55,11 @@ node('ubuntu-chef-zion') {
     stage('Test') {
       gitHub.statusUpdate commitId, 'pending', 'test', 'Tests are running'
 
+      def keyPairName = "chef-key-${UUID.randomUUID().toString().reverse().take(7).reverse()}"
+
       try {
         OsTools.runSafe(this, """
-          aws --region us-east-1 ec2 create-key-pair --key-name chef-test-key \
+          aws --region us-east-1 ec2 create-key-pair --key-name ${keyPairName} \
           | ruby -e "require 'json'; puts JSON.parse(STDIN.read)['KeyMaterial']" > ~/.ssh/chef-test-key
         """)
 
@@ -64,7 +67,7 @@ node('ubuntu-chef-zion') {
           OsTools.runSafe(this, "tar -zxvf ${archiveName}")
         }
 
-        dir('build/target/cookbooks/nexus_iq_server') {
+        dir("build/target/cookbooks/${cookbookName}") {
           OsTools.runSafe(this, 'cp ../../../../.kitchen.yml .')
           OsTools.runSafe(this, 'cp ../../../../Berksfile .')
           OsTools.runSafe(this, 'cp ../../../../Berksfile.lock .')
@@ -72,8 +75,8 @@ node('ubuntu-chef-zion') {
           OsTools.runSafe(this, 'kitchen test')
         }
       } finally {
-        OsTools.runSafe(this, 'aws --region us-east-1 ec2 delete-key-pair --key-name chef-test-key')
-        OsTools.runSafe(this, 'rm -f ~/.ssh/chef-test-key')
+        OsTools.runSafe(this, "aws --region us-east-1 ec2 delete-key-pair --key-name ${keyPairName}")
+        OsTools.runSafe(this, "rm -f ~/.ssh/${keyPairName}")
       }
 
       if (currentBuild.result == 'FAILURE') {
