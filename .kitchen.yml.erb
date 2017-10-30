@@ -1,0 +1,43 @@
+---
+# Copyright:: Copyright (c) 2017-present Sonatype, Inc. Apache License, Version 2.0.
+driver:
+  name: ec2
+  aws_ssh_key_id: <%= ENV['KEY_PAIR_NAME'] %>
+  region: us-east-1
+  security_group_ids: ["<%= ENV['SECURITY_GROUP_ID'] %>"]
+  require_chef_omnibus: true
+  subnet_id: <%= ENV['SUBNET_ID'] %>
+  instance_type: t2.large
+  tags:
+    Name: chef-test
+
+transport:
+  ssh_key: ~/.ssh/<%= ENV['KEY_PAIR_NAME'] %>
+
+provisioner:
+  name: chef_solo
+  always_update_cookbooks: true
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-16.04
+    driver:
+      image_id: ami-1d4e7a66
+    transport:
+      username: ubuntu
+  - name: centos-7.3
+    driver:
+      image_id: ami-ae7bfdb8
+    transport:
+      username: centos
+
+suites:
+  - name: default
+    run_list:
+      - recipe[nexus_iq_server::default]
+    verifier:
+      inspec_tests:
+        - test/smoke/default
+    attributes:
