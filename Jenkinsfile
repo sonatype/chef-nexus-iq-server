@@ -5,12 +5,14 @@
 import com.sonatype.jenkins.pipeline.GitHub
 import com.sonatype.jenkins.pipeline.OsTools
 
-parameters {
-      string(name: 'securityGroupId', defaultValue: 'sg-a4fc5ec1',
-          description: 'The security group id to use for the chef tests.')
-      string(name: 'subnetId', defaultValue: 'subnet-c96f61bd',
-          description: 'The subnet id to use for the chef tests.')
-}
+properties([
+  parameters([
+    string(name: 'securityGroupId', defaultValue: 'sg-a4fc5ec1',
+        description: 'The security group id to use for the chef tests.')
+    string(name: 'subnetId', defaultValue: 'subnet-c96f61bd',
+        description: 'The subnet id to use for the chef tests.')
+  ])
+])
 node('ubuntu-chef-zion') {
   def commitId, commitDate, version, imageId, apiToken
   def organization = 'sonatype',
