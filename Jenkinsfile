@@ -8,7 +8,7 @@ import com.sonatype.jenkins.pipeline.OsTools
 properties([
   parameters([
     string(name: 'securityGroupId', defaultValue: 'sg-a4fc5ec1',
-        description: 'The security group id to use for the chef tests.')
+        description: 'The security group id to use for the chef tests.'),
     string(name: 'subnetId', defaultValue: 'subnet-c96f61bd',
         description: 'The subnet id to use for the chef tests.')
   ])
