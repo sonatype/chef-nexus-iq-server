@@ -73,7 +73,7 @@ node('ubuntu-chef-zion') {
 
         dir("build/target/cookbooks/${cookbookName}") {
           OsTools.runSafe(this, """
-            KEY_PAIR_NAME=${keyPairName} SECURITY_GROUP_ID=${params.securityGroupId} SUBNET_ID=$(params.subnetId} \
+            KEY_PAIR_NAME=${keyPairName} SECURITY_GROUP_ID=${params.securityGroupId} SUBNET_ID=${params.subnetId} \
             erb ${WORKSPACE}/.kitchen.yml.erb > .kitchen.yml
           """)
           OsTools.runSafe(this, 'cp ${WORKSPACE}/Berksfile .')
