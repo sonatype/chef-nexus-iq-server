@@ -9,4 +9,4 @@
 %>
 
 cd <%= node['nexus_iq_server']['install_dir'] %>
-exec /usr/bin/java -jar <%= nexus_iq_jar  %> server <%= nexus_iq_config  %>
+exec /usr/bin/java -jar ${JAVA_OPTS} <%= nexus_iq_jar %> server <%= nexus_iq_config %>
