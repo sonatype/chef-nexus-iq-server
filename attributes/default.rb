@@ -12,6 +12,7 @@ default['nexus_iq_server']['checksum'] = 'a1a5d127e2deaf2b26ed4e605802986b99ea31
 default['nexus_iq_server']['install_dir'] = '/opt/sonatype/nexus-iq-server'
 default['nexus_iq_server']['logs_dir'] = '/var/log/nexus-iq-server'
 default['nexus_iq_server']['conf_dir'] = '/etc/nexus-iq-server'
+default['nexus_iq_server']['java_opts'] = ''
 
 #
 # default['nexus_iq_server']['config'] is used to generate config.yml. Parameter names and hierarchy must be the same as they
