@@ -6,7 +6,8 @@
 <%
     nexus_iq_jar = node['nexus_iq_server']['install_dir'] + "/nexus-iq-server-#{node['nexus_iq_server']['version']}.jar"
     nexus_iq_config = node['nexus_iq_server']['conf_dir'] + '/config.yml'
+    nexus_iq_java_opts = node['nexus_iq_server']['java_opts']
 %>
 
 cd <%= node['nexus_iq_server']['install_dir'] %>
-exec /usr/bin/java -jar <%= nexus_iq_jar  %> server <%= nexus_iq_config  %>
+exec /usr/bin/java <%= nexus_iq_java_opts %> -jar <%= nexus_iq_jar %> server <%= nexus_iq_config %>
