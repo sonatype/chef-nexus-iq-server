@@ -52,11 +52,11 @@ node('ubuntu-chef-zion') {
         def defaultsFileLocation = "${pwd()}/attributes/default.rb"
         def defaultsFile = readFile(file: defaultsFileLocation)
 
-        def versionRegex = /default['nexus_iq_server']['version'] = '(\d\.\d\.\d\-\d{2})'/
-        def shaRegex = /default['nexus_iq_server']['checksum'] = '([A-Fa-f0-9]{64})'/
+        def versionRegex = /(default['nexus_iq_server']['version'] = ')(\d\.\d\.\d\-\d{2})(')/
+        def shaRegex = /(default['nexus_iq_server']['checksum'] = ')([A-Fa-f0-9]{64})(')/
 
-        defaultsFile.replaceAll(versionRegex, params.nexus_iq_version)
-        defaultsFile.replaceAll(shaRegex, params.nexus_iq_version_sha)
+        defaultsFile = defaultsFile.replaceAll(versionRegex, "\$1${params.nexus_iq_version}\$2")
+        defaultsFile = defaultsFile.replaceAll(shaRegex, "\$1${params.nexus_iq_version_sha}\$2")
 
         writeFile(file: defaultsFileLocation, text: defaultsFile)
       }
