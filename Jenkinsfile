@@ -7,6 +7,9 @@ import com.sonatype.jenkins.pipeline.OsTools
 
 properties([
   parameters([
+    string(defaultValue: '', description: 'New Nexus IQ Version', name: 'nexus_iq_version'),
+    string(defaultValue: '', description: 'New Nexus IQ Version Sha256', name: 'nexus_iq_version_sha'),
+
     string(name: 'security_group_id', defaultValue: 'sg-a4fc5ec1',
         description: 'The security group id to use for the chef tests.'),
     string(name: 'subnet_id', defaultValue: 'subnet-c96f61bd',
@@ -14,7 +17,7 @@ properties([
   ])
 ])
 node('ubuntu-chef-zion') {
-  def commitId, commitDate, version, imageId, apiToken
+  def commitId, commitDate, version, imageId, apiToken, branch
   def organization = 'sonatype',
       repository = 'chef-nexus-iq-server',
       credentialsId = 'integrations-github-api',
@@ -27,9 +30,13 @@ node('ubuntu-chef-zion') {
       deleteDir()
 
       checkout scm
+      branch = scm.branches[0].name
 
       commitId = OsTools.runSafe(this, 'git rev-parse HEAD')
       commitDate = OsTools.runSafe(this, "git show -s --format=%cd --date=format:%Y%m%d-%H%M%S ${commitId}")
+
+      OsTools.runSafe(this, 'git config --global user.email sonatype-ci@sonatype.com')
+      OsTools.runSafe(this, 'git config --global user.name Sonatype CI')
 
       version = readVersion().split('-')[0] + ".${commitDate}.${commitId.substring(0, 7)}"
 
@@ -38,6 +45,21 @@ node('ubuntu-chef-zion') {
         apiToken = env.GITHUB_API_PASSWORD
       }
       gitHub = new GitHub(this, "${organization}/${repository}", apiToken)
+    }
+    if (params.nexus_iq_version && params.nexus_iq_version_sha) {
+      stage('Update IQ Version') {
+        OsTools.runSafe(this, "git checkout ${branch}")
+        def defaultsFileLocation = "${pwd()}/attributes/default.rb"
+        def defaultsFile = readFile(file: defaultsFileLocation)
+
+        def versionRegex = /(default\['nexus_iq_server'\]\['version'\] = ')(\d\.\d{1,3}\.\d\-\d{2})(')/
+        def shaRegex = /(default\['nexus_iq_server'\]\['checksum'\] = ')([A-Fa-f0-9]{64})(')/
+
+        defaultsFile = defaultsFile.replaceAll(versionRegex, "\$1${params.nexus_iq_version}\$3")
+        defaultsFile = defaultsFile.replaceAll(shaRegex, "\$1${params.nexus_iq_version_sha}\$3")
+
+        writeFile(file: defaultsFileLocation, text: defaultsFile)
+      }
     }
     stage('Build') {
       gitHub.statusUpdate commitId, 'pending', 'build', 'Build is running'
@@ -98,12 +120,24 @@ node('ubuntu-chef-zion') {
     if (currentBuild.result == 'FAILURE') {
       return
     }
+    if (params.nexus_iq_version && params.nexus_iq_version_sha) {
+      stage('Commit IQ Version Update') {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'integrations-github-api',
+                        usernameVariable: 'GITHUB_API_USERNAME', passwordVariable: 'GITHUB_API_PASSWORD']]) {
+          OsTools.runSafe(this, """
+            git add .
+            git commit -m 'Update IQ Server to ${params.nexus_iq_version}'
+            git push https://${env.GITHUB_API_USERNAME}:${env.GITHUB_API_PASSWORD}@github.com/${organization}/${repository}.git ${branch}
+          """)
+        }
+      }
+    }
     stage('Archive') {
       dir('build/target') {
         archiveArtifacts artifacts: "${archiveName}", onlyIfSuccessful: true
       }
     }
-    if (scm.branches[0].name != '*/master') {
+    if (branch != '*/master') {
       return
     }
     input 'Push tags?'
