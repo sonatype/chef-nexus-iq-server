@@ -55,8 +55,8 @@ node('ubuntu-chef-zion') {
         def versionRegex = /(default\['nexus_iq_server'\]\['version'\] = ')(\d\.\d\.\d\-\d{2})(')/
         def shaRegex = /(default\['nexus_iq_server'\]\['checksum'\] = ')([A-Fa-f0-9]{64})(')/
 
-        defaultsFile = defaultsFile.replaceAll(versionRegex, "\$1${params.nexus_iq_version}\$2")
-        defaultsFile = defaultsFile.replaceAll(shaRegex, "\$1${params.nexus_iq_version_sha}\$2")
+        defaultsFile = defaultsFile.replaceAll(versionRegex, "\$1${params.nexus_iq_version}\$3")
+        defaultsFile = defaultsFile.replaceAll(shaRegex, "\$1${params.nexus_iq_version_sha}\$3")
 
         writeFile(file: defaultsFileLocation, text: defaultsFile)
       }
