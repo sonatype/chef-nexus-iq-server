@@ -52,7 +52,7 @@ node('ubuntu-chef-zion') {
         def defaultsFileLocation = "${pwd()}/attributes/default.rb"
         def defaultsFile = readFile(file: defaultsFileLocation)
 
-        def versionRegex = /(default\['nexus_iq_server'\]\['version'\] = ')(\d\.\d\.\d\-\d{2})(')/
+        def versionRegex = /(default\['nexus_iq_server'\]\['version'\] = ')(\d\.\d{1,3}\.\d\-\d{2})(')/
         def shaRegex = /(default\['nexus_iq_server'\]\['checksum'\] = ')([A-Fa-f0-9]{64})(')/
 
         defaultsFile = defaultsFile.replaceAll(versionRegex, "\$1${params.nexus_iq_version}\$3")
