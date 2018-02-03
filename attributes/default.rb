@@ -19,13 +19,16 @@ default['nexus_iq_server']['java_opts'] = ''
 # are in config.yml.
 #
 default['nexus_iq_server']['config']['sonatypeWork'] = default['nexus_iq_server']['install_dir'] + '/sonatype-work/'
-default['nexus_iq_server']['config']['http']['port'] = 8070
-default['nexus_iq_server']['config']['http']['adminPort'] = 8071
-default['nexus_iq_server']['config']['http']['requestLog']['console']['enabled'] = false
-default['nexus_iq_server']['config']['http']['requestLog']['file']['enabled'] = true
-default['nexus_iq_server']['config']['http']['requestLog']['file']['currentLogFilename'] = default['nexus_iq_server']['logs_dir'] + '/request.log'
-default['nexus_iq_server']['config']['http']['requestLog']['file']['archivedLogFilenamePattern'] = default['nexus_iq_server']['logs_dir'] + "/request-\%d.log.gz"
-default['nexus_iq_server']['config']['http']['requestLog']['file']['archivedFileCount'] = 50
+default['nexus_iq_server']['config']['server']['applicationConnectors'] = [{'type' => 'http', 'port' => 8070}]
+default['nexus_iq_server']['config']['server']['adminConnectors'] = [{'type' => 'http', 'port' => 8071}]
+default['nexus_iq_server']['config']['server']['requestLog']['appenders'] = [
+  {
+    'type' => 'file',
+    'currentLogFilename' => default['nexus_iq_server']['logs_dir'] + '/request.log',
+    'archivedLogFilenamePattern' => default['nexus_iq_server']['logs_dir'] + "/request-\%d.log.gz",
+    'archivedFileCount' => 50
+  }
+]
 default['nexus_iq_server']['config']['logging']['level'] = 'DEBUG'
 default['nexus_iq_server']['config']['logging']['loggers']['com.sonatype.insight.scan'] = 'INFO'
 default['nexus_iq_server']['config']['logging']['loggers']['eu.medsea.mimeutil.MimeUtil2'] = 'INFO'
@@ -35,12 +38,18 @@ default['nexus_iq_server']['config']['logging']['loggers']['org.eclipse.birt.rep
 default['nexus_iq_server']['config']['logging']['loggers']['org.eclipse.jetty'] = 'INFO'
 # WARNING: BasicHttpAuthenticationFilter reveals credentials at DEBUG level
 default['nexus_iq_server']['config']['logging']['loggers']['org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter'] = 'INFO'
-default['nexus_iq_server']['config']['logging']['console']['enabled'] = true
-default['nexus_iq_server']['config']['logging']['console']['threshold'] = 'INFO'
-default['nexus_iq_server']['config']['logging']['console']['logFormat'] = "\%d{'yyyy-MM-dd HH:mm:ss,SSSZ'} \%level [\%thread] \%X{username} \%logger \%msg\%n"
-default['nexus_iq_server']['config']['logging']['file']['enabled'] = true
-default['nexus_iq_server']['config']['logging']['file']['threshold'] = 'ALL'
-default['nexus_iq_server']['config']['logging']['file']['currentLogFilename'] = default['nexus_iq_server']['logs_dir'] + '/clm-server.log'
-default['nexus_iq_server']['config']['logging']['file']['archivedLogFilenamePattern'] = default['nexus_iq_server']['logs_dir'] + "/clm-server-\%d.log.gz"
-default['nexus_iq_server']['config']['logging']['file']['archivedFileCount'] = 50
-default['nexus_iq_server']['config']['logging']['file']['logFormat'] = "\%d{'yyyy-MM-dd HH:mm:ss,SSSZ'} \%level [\%thread] \%X{username} \%logger \%msg\%n"
+default['nexus_iq_server']['config']['logging']['appenders'] = [
+  {
+    'type' => 'console',
+    'threshold' => 'INFO',
+    'logFormat' => "%d{'yyyy-MM-dd HH:mm:ss,SSSZ'} %level [%thread] %X{username} %logger - %msg%n"
+  },
+  {
+    'type' => 'file',
+    'threshold' => 'ALL',
+    'currentLogFilename' => "/var/log/nexus-iq-server/clm-server.log",
+    'archivedLogFilenamePattern' => "/var/log/nexus-iq-server/clm-server-%d.log.gz",
+    'logFormat' => "%d{'yyyy-MM-dd HH:mm:ss,SSSZ'} %level [%thread] %X{username} %logger - %msg%n",
+    'archivedFileCount' => 50
+  }
+]
