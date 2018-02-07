@@ -53,3 +53,4 @@ default['nexus_iq_server']['config']['logging']['appenders'] = [
     'archivedFileCount' => 50
   }
 ]
+default['nexus_iq_server']['config']['createSampleData'] = true
