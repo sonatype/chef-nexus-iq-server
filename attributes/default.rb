@@ -7,8 +7,8 @@ default['java']['jdk_version'] = '8'
 default['java']['install_flavor'] = 'oracle'
 default['java']['oracle']['accept_oracle_download_terms'] = true
 
-default['nexus_iq_server']['version'] = '1.52.0-01'
-default['nexus_iq_server']['checksum'] = '27784d4b08759a38b65fb32cbb30411ae6efd32965f15b6b3e42fb5e59d23154'
+default['nexus_iq_server']['version'] = '1.53.0-01'
+default['nexus_iq_server']['checksum'] = 'd99c96285393cf6edc1d0034671861a5c40ad7dd8b9e688d0c6506a2fd696317'
 default['nexus_iq_server']['install_dir'] = '/opt/sonatype/nexus-iq-server'
 default['nexus_iq_server']['logs_dir'] = '/var/log/nexus-iq-server'
 default['nexus_iq_server']['conf_dir'] = '/etc/nexus-iq-server'
