@@ -22,7 +22,7 @@ node('ubuntu-chef-zion') {
       archiveName = 'chef-nexus-iq-server.tar.gz',
       cookbookName = 'nexus_iq_server'
   GitHub gitHub
-  VersionTools VersionTools
+  VersionTools versionTools
 
   try {
     stage('Preparation') {
