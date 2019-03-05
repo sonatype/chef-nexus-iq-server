@@ -22,14 +22,18 @@ node('ubuntu-chef-zion') {
       archiveName = 'chef-nexus-iq-server.tar.gz',
       cookbookName = 'nexus_iq_server'
   GitHub gitHub
+  VersionTools VersionTools
 
   try {
     stage('Preparation') {
       deleteDir()
 
+      versionTools = new VersionTools(this, currentBuild)
+
       def checkoutDetails = checkout scm
       branch = checkoutDetails.GIT_BRANCH == 'origin/master' ? 'master' : checkoutDetails.GIT_BRANCH
       commitId = checkoutDetails.GIT_COMMIT
+
       majorMinorVersion = readVersion().split('-')[0]
       version = VersionTools.getCommitVersion(majorMinorVersion, commitId)
       VersionTools.setDisplayName(version)
