@@ -7,8 +7,8 @@ default['java']['jdk_version'] = '8'
 default['java']['install_flavor'] = 'openjdk'
 default['java']['accept_license_agreement'] = true
 
-default['nexus_iq_server']['version'] = '1.62.0-01'
-default['nexus_iq_server']['checksum'] = '9d4913e5c2fbc5b3cf33bf4f8948c4d1ab4a82c585161c59d8c4c93529b45feb'
+default['nexus_iq_server']['version'] = '1.61.0-02'
+default['nexus_iq_server']['checksum'] = 'd898660d0a7e049a589fefc20958cac6444a3584add16993e3fd1aea7162513d'
 default['nexus_iq_server']['install_dir'] = '/opt/sonatype/nexus-iq-server'
 default['nexus_iq_server']['logs_dir'] = '/var/log/nexus-iq-server'
 default['nexus_iq_server']['conf_dir'] = '/etc/nexus-iq-server'
