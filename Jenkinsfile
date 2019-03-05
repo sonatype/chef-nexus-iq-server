@@ -104,7 +104,7 @@ node('ubuntu-chef-zion') {
             git push https://${env.GITHUB_API_USERNAME}:${env.GITHUB_API_PASSWORD}@github.com/${organization}/${repository}.git ${branch}
           """)
 
-          def commitId = OsTools.runSafe(this, "git rev-parse --short HEAD")
+          commitId = OsTools.runSafe(this, "git rev-parse --short HEAD")
           version = getCommitVersion(commitId)
           echo "version = ${version}"
         }
@@ -152,7 +152,7 @@ node('ubuntu-chef-zion') {
   }
 }
 def getCommitVersion(commitId) {
-  def commitDate = OsTools.runSafe(this, "git show -s --format=%cd --date=format:%Y%m%d-%H%M%S ${commitId}")
+  commitDate = OsTools.runSafe(this, "git show -s --format=%cd --date=format:%Y%m%d-%H%M%S ${commitId}")
   return readVersion().split('-')[0] + ".${commitDate}.${commitId.substring(0, 7)}"
 }
 def readVersion() {
