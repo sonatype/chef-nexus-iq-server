@@ -1,9 +1,10 @@
 /*
  * Copyright:: Copyright (c) 2017-present Sonatype, Inc. Apache License, Version 2.0.
  */
-@Library('private-pipeline-library')
+@Library('private-pipeline-library@INT-add-version-tools')
 import com.sonatype.jenkins.pipeline.GitHub
 import com.sonatype.jenkins.pipeline.OsTools
+import com.sonatype.jenkins.pipeline.VersionTools
 
 properties([
   parameters([
@@ -14,7 +15,7 @@ properties([
   ])
 ])
 node('ubuntu-chef-zion') {
-  def commitId, version, imageId, apiToken, branch, defaultsFileLocation
+  def commitId, version, imageId, apiToken, branch, defaultsFileLocation, majorMinorVersion
   def organization = 'sonatype',
       repository = 'chef-nexus-iq-server',
       credentialsId = 'integrations-github-api',
@@ -29,8 +30,9 @@ node('ubuntu-chef-zion') {
       def checkoutDetails = checkout scm
       branch = checkoutDetails.GIT_BRANCH == 'origin/master' ? 'master' : checkoutDetails.GIT_BRANCH
       commitId = checkoutDetails.GIT_COMMIT
-      version = getCommitVersion(commitId)
-      setDisplayName(version)
+      majorMinorVersion = readVersion().split('-')[0]
+      version = VersionTools.getCommitVersion(majorMinorVersion, commitId)
+      VersionTools.setDisplayName(version)
 
       OsTools.runSafe(this, 'git config --global user.email sonatype-ci@sonatype.com')
       OsTools.runSafe(this, 'git config --global user.name Sonatype CI')
@@ -104,8 +106,8 @@ node('ubuntu-chef-zion') {
             git push https://${env.GITHUB_API_USERNAME}:${env.GITHUB_API_PASSWORD}@github.com/${organization}/${repository}.git ${branch}
           """)
 
-          version = getCommitVersion(OsTools.runSafe(this, "git rev-parse HEAD"))
-          setDisplayName(version)
+          version = VersionTools.getCommitVersion(majorMinorVersion, OsTools.runSafe(this, "git rev-parse HEAD"))
+          VersionTools.setDisplayName(version)
         }
       }
     }
@@ -149,13 +151,6 @@ node('ubuntu-chef-zion') {
   } finally {
     OsTools.runSafe(this, 'git clean -f && git reset --hard origin/master')
   }
-}
-def getCommitVersion(commitId) {
-  def commitDate = OsTools.runSafe(this, "git show -s --format=%cd --date=format:%Y%m%d-%H%M%S ${commitId}")
-  return readVersion().split('-')[0] + ".${commitDate}.${commitId.substring(0, 7)}"
-}
-def setDisplayName(version) {
-  currentBuild.displayName = "#${currentBuild.number} - ${version}"
 }
 def readVersion() {
   readFile('version').split('\n')[0]
