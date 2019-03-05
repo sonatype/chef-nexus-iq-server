@@ -104,7 +104,7 @@ node('ubuntu-chef-zion') {
             git push https://${env.GITHUB_API_USERNAME}:${env.GITHUB_API_PASSWORD}@github.com/${organization}/${repository}.git ${branch}
           """)
 
-          commitId = OsTools.runSafe(this, "git rev-parse --short HEAD")
+          commitId = OsTools.runSafe(this, "git rev-parse HEAD")
           version = getCommitVersion(commitId)
           echo "version = ${version}"
         }
