@@ -14,7 +14,7 @@ properties([
   ])
 ])
 node('ubuntu-chef-zion') {
-  def commitId, commitDate, version, imageId, apiToken, branch, defaultsFileLocation
+  def commitId, version, imageId, apiToken, branch, defaultsFileLocation
   def organization = 'sonatype',
       repository = 'chef-nexus-iq-server',
       credentialsId = 'integrations-github-api',
@@ -103,8 +103,7 @@ node('ubuntu-chef-zion') {
             git push https://${env.GITHUB_API_USERNAME}:${env.GITHUB_API_PASSWORD}@github.com/${organization}/${repository}.git ${branch}
           """)
 
-          commitId = OsTools.runSafe(this, "git rev-parse HEAD")
-          version = getCommitVersion(commitId)
+          version = getCommitVersion(OsTools.runSafe(this, "git rev-parse HEAD"))
         }
       }
     }
@@ -150,7 +149,7 @@ node('ubuntu-chef-zion') {
   }
 }
 def getCommitVersion(commitId) {
-  commitDate = OsTools.runSafe(this, "git show -s --format=%cd --date=format:%Y%m%d-%H%M%S ${commitId}")
+  def commitDate = OsTools.runSafe(this, "git show -s --format=%cd --date=format:%Y%m%d-%H%M%S ${commitId}")
   return readVersion().split('-')[0] + ".${commitDate}.${commitId.substring(0, 7)}"
 }
 def readVersion() {
