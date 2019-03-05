@@ -29,13 +29,11 @@ node('ubuntu-chef-zion') {
       def checkoutDetails = checkout scm
       branch = checkoutDetails.GIT_BRANCH == 'origin/master' ? 'master' : checkoutDetails.GIT_BRANCH
       commitId = checkoutDetails.GIT_COMMIT
-
-      commitDate = OsTools.runSafe(this, "git show -s --format=%cd --date=format:%Y%m%d-%H%M%S ${commitId}")
+      version = getCommitVersion(commitId)
+      echo "version = ${version}"
 
       OsTools.runSafe(this, 'git config --global user.email sonatype-ci@sonatype.com')
       OsTools.runSafe(this, 'git config --global user.name Sonatype CI')
-
-      version = readVersion().split('-')[0] + ".${commitDate}.${commitId.substring(0, 7)}"
 
       withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialsId,
                         usernameVariable: 'GITHUB_API_USERNAME', passwordVariable: 'GITHUB_API_PASSWORD']]) {
@@ -105,6 +103,10 @@ node('ubuntu-chef-zion') {
             git commit -m 'Update IQ Server to ${params.nexus_iq_version}'
             git push https://${env.GITHUB_API_USERNAME}:${env.GITHUB_API_PASSWORD}@github.com/${organization}/${repository}.git ${branch}
           """)
+
+          def commitId = OsTools.runSafe(this, "git rev-parse --short HEAD")
+          version = getCommitVersion(commitId)
+          echo "version = ${version}"
         }
       }
     }
@@ -148,6 +150,10 @@ node('ubuntu-chef-zion') {
   } finally {
     OsTools.runSafe(this, 'git clean -f && git reset --hard origin/master')
   }
+}
+def getCommitVersion(commitId) {
+  def commitDate = OsTools.runSafe(this, "git show -s --format=%cd --date=format:%Y%m%d-%H%M%S ${commitId}")
+  return readVersion().split('-')[0] + ".${commitDate}.${commitId.substring(0, 7)}"
 }
 def readVersion() {
   readFile('version').split('\n')[0]
