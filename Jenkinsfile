@@ -30,6 +30,7 @@ node('ubuntu-chef-zion') {
       branch = checkoutDetails.GIT_BRANCH == 'origin/master' ? 'master' : checkoutDetails.GIT_BRANCH
       commitId = checkoutDetails.GIT_COMMIT
       version = getCommitVersion(commitId)
+      setDisplayName(version)
 
       OsTools.runSafe(this, 'git config --global user.email sonatype-ci@sonatype.com')
       OsTools.runSafe(this, 'git config --global user.name Sonatype CI')
@@ -104,6 +105,7 @@ node('ubuntu-chef-zion') {
           """)
 
           version = getCommitVersion(OsTools.runSafe(this, "git rev-parse HEAD"))
+          setDisplayName(version)
         }
       }
     }
@@ -151,6 +153,9 @@ node('ubuntu-chef-zion') {
 def getCommitVersion(commitId) {
   def commitDate = OsTools.runSafe(this, "git show -s --format=%cd --date=format:%Y%m%d-%H%M%S ${commitId}")
   return readVersion().split('-')[0] + ".${commitDate}.${commitId.substring(0, 7)}"
+}
+def setDisplayName(version) {
+  currentBuild.displayName = "#${currentBuild.number} - ${version}"
 }
 def readVersion() {
   readFile('version').split('\n')[0]
