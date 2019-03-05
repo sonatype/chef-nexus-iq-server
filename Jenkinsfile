@@ -30,7 +30,6 @@ node('ubuntu-chef-zion') {
       branch = checkoutDetails.GIT_BRANCH == 'origin/master' ? 'master' : checkoutDetails.GIT_BRANCH
       commitId = checkoutDetails.GIT_COMMIT
       version = getCommitVersion(commitId)
-      echo "version = ${version}"
 
       OsTools.runSafe(this, 'git config --global user.email sonatype-ci@sonatype.com')
       OsTools.runSafe(this, 'git config --global user.name Sonatype CI')
@@ -106,7 +105,6 @@ node('ubuntu-chef-zion') {
 
           commitId = OsTools.runSafe(this, "git rev-parse HEAD")
           version = getCommitVersion(commitId)
-          echo "version = ${version}"
         }
       }
     }
