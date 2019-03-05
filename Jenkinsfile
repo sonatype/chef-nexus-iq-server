@@ -35,8 +35,8 @@ node('ubuntu-chef-zion') {
       commitId = checkoutDetails.GIT_COMMIT
 
       majorMinorVersion = readVersion().split('-')[0]
-      version = VersionTools.getCommitVersion(majorMinorVersion, commitId)
-      VersionTools.setDisplayName(version)
+      version = versionTools.getCommitVersion(majorMinorVersion, commitId)
+      versionTools.setDisplayName(version)
 
       OsTools.runSafe(this, 'git config --global user.email sonatype-ci@sonatype.com')
       OsTools.runSafe(this, 'git config --global user.name Sonatype CI')
@@ -110,8 +110,8 @@ node('ubuntu-chef-zion') {
             git push https://${env.GITHUB_API_USERNAME}:${env.GITHUB_API_PASSWORD}@github.com/${organization}/${repository}.git ${branch}
           """)
 
-          version = VersionTools.getCommitVersion(majorMinorVersion, OsTools.runSafe(this, "git rev-parse HEAD"))
-          VersionTools.setDisplayName(version)
+          version = versionTools.getCommitVersion(majorMinorVersion, OsTools.runSafe(this, "git rev-parse HEAD"))
+          versionTools.setDisplayName(version)
         }
       }
     }
