@@ -15,7 +15,7 @@ properties([
   ])
 ])
 node('ubuntu-chef-zion') {
-  def commitId, version, imageId, apiToken, branch, defaultsFileLocation, majorMinorVersion
+  def commitId, version, imageId, apiToken, branch, defaultsFileLocation
   def organization = 'sonatype',
       repository = 'chef-nexus-iq-server',
       credentialsId = 'integrations-github-api',
@@ -33,7 +33,6 @@ node('ubuntu-chef-zion') {
       branch = checkoutDetails.GIT_BRANCH == 'origin/master' ? 'master' : checkoutDetails.GIT_BRANCH
       commitId = checkoutDetails.GIT_COMMIT
 
-      majorMinorVersion = readVersion().split('-')[0]
       version = getVersion()
       setBuildDisplayName(Version: version)
 
@@ -154,9 +153,6 @@ node('ubuntu-chef-zion') {
   } finally {
     OsTools.runSafe(this, 'git clean -f && git reset --hard origin/master')
   }
-}
-def readVersion() {
-  readFile('version').split('\n')[0]
 }
 def getGemInstallDirectory() {
   def content = OsTools.runSafe(this, "gem env")
