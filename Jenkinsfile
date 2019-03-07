@@ -22,7 +22,6 @@ node('ubuntu-chef-zion') {
       archiveName = 'chef-nexus-iq-server.tar.gz',
       cookbookName = 'nexus_iq_server'
   GitHub gitHub
-  VersionTools versionTools
 
   try {
     stage('Preparation') {
@@ -35,7 +34,7 @@ node('ubuntu-chef-zion') {
       commitId = checkoutDetails.GIT_COMMIT
 
       majorMinorVersion = readVersion().split('-')[0]
-      version = versionTools.getCommitVersion(majorMinorVersion, commitId)
+      version = getVersion()
       setBuildDisplayName(Version: version)
 
       OsTools.runSafe(this, 'git config --global user.email sonatype-ci@sonatype.com')
@@ -110,7 +109,7 @@ node('ubuntu-chef-zion') {
             git push https://${env.GITHUB_API_USERNAME}:${env.GITHUB_API_PASSWORD}@github.com/${organization}/${repository}.git ${branch}
           """)
 
-          version = versionTools.getCommitVersion(majorMinorVersion, OsTools.runSafe(this, "git rev-parse HEAD"))
+          version = getVersion()
           setBuildDisplayName(Version: version)
         }
       }
