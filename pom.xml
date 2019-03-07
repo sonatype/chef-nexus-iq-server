@@ -11,8 +11,7 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.sonatype.chef.iq</groupId>
+  <groupId>com.sonatype.chef.iq.server</groupId>
   <artifactId>chef-nexus-iq-server</artifactId>
-  <packaging>pom</packaging>
   <version>0.4-SNAPSHOT</version>
 </project>
