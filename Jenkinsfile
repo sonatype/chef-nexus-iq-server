@@ -4,7 +4,6 @@
 @Library(['ci-pipeline-library', 'jenkins-shared', 'int-jenkins-shared']) _
 import com.sonatype.jenkins.pipeline.GitHub
 import com.sonatype.jenkins.pipeline.OsTools
-import com.sonatype.jenkins.pipeline.VersionTools
 
 properties([
   parameters([
@@ -15,27 +14,23 @@ properties([
   ])
 ])
 node('ubuntu-chef-zion') {
-  def commitId, version, imageId, apiToken, branch, defaultsFileLocation, majorMinorVersion
+  def commitId, version, imageId, apiToken, branch, defaultsFileLocation
   def organization = 'sonatype',
       repository = 'chef-nexus-iq-server',
       credentialsId = 'integrations-github-api',
       archiveName = 'chef-nexus-iq-server.tar.gz',
       cookbookName = 'nexus_iq_server'
   GitHub gitHub
-  VersionTools versionTools
 
   try {
     stage('Preparation') {
       deleteDir()
 
-      versionTools = new VersionTools(this, currentBuild)
-
       def checkoutDetails = checkout scm
       branch = checkoutDetails.GIT_BRANCH == 'origin/master' ? 'master' : checkoutDetails.GIT_BRANCH
       commitId = checkoutDetails.GIT_COMMIT
 
-      majorMinorVersion = readVersion().split('-')[0]
-      version = versionTools.getCommitVersion(majorMinorVersion, commitId)
+      version = getVersion()
       setBuildDisplayName(Version: version)
 
       OsTools.runSafe(this, 'git config --global user.email sonatype-ci@sonatype.com')
@@ -110,7 +105,7 @@ node('ubuntu-chef-zion') {
             git push https://${env.GITHUB_API_USERNAME}:${env.GITHUB_API_PASSWORD}@github.com/${organization}/${repository}.git ${branch}
           """)
 
-          version = versionTools.getCommitVersion(majorMinorVersion, OsTools.runSafe(this, "git rev-parse HEAD"))
+          version = getVersion()
           setBuildDisplayName(Version: version)
         }
       }
@@ -155,9 +150,6 @@ node('ubuntu-chef-zion') {
   } finally {
     OsTools.runSafe(this, 'git clean -f && git reset --hard origin/master')
   }
-}
-def readVersion() {
-  readFile('version').split('\n')[0]
 }
 def getGemInstallDirectory() {
   def content = OsTools.runSafe(this, "gem env")
