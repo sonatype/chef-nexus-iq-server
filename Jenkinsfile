@@ -4,7 +4,6 @@
 @Library(['ci-pipeline-library', 'jenkins-shared', 'int-jenkins-shared']) _
 import com.sonatype.jenkins.pipeline.GitHub
 import com.sonatype.jenkins.pipeline.OsTools
-import com.sonatype.jenkins.pipeline.VersionTools
 
 properties([
   parameters([
@@ -26,8 +25,6 @@ node('ubuntu-chef-zion') {
   try {
     stage('Preparation') {
       deleteDir()
-
-      versionTools = new VersionTools(this, currentBuild)
 
       def checkoutDetails = checkout scm
       branch = checkoutDetails.GIT_BRANCH == 'origin/master' ? 'master' : checkoutDetails.GIT_BRANCH
