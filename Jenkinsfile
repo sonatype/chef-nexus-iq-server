@@ -118,7 +118,6 @@ node('ubuntu-chef-zion') {
     if (branch != 'master') {
       return
     }
-    input 'Push tags?'
     stage('Push tags') {
       withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialsId,
                         usernameVariable: 'GITHUB_API_USERNAME', passwordVariable: 'GITHUB_API_PASSWORD']]) {
