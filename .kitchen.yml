@@ -43,3 +43,9 @@ suites:
 #           x86_64:
 #              url: 'http://10.0.2.2:8080/jdk-8u131-linux-x64.tar.gz'
 #              checksum: '62b215bdfb48bace523723cdbb2157c665e6a25429c73828a32f00e587301236'
+  - name: rh-docker
+    run_list:
+      - recipe[nexus_iq_server::rh-docker]
+    verifier:
+      inspec_tests:
+        - test/smoke/rh-docker
