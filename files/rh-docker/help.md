@@ -1,6 +1,6 @@
 % NEXUS(1) Container Image Pages
 % Sonatype
-% December 15, 2017
+% February 2, 2020
 
 # NAME
 nexus \- Nexus IQ Server container image

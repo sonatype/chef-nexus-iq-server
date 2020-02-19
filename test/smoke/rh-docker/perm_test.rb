@@ -7,7 +7,7 @@
 # Permissions test for recipe nexus_iq_server::rh-docker
 
 control 'rh-docker-perms-test-001' do
-  title 'Allows nexus user to mutate /etc/password'
+  title 'Allows nexus user to mutate system password file'
   describe user('nexus') do
     it { should exist }
   end
