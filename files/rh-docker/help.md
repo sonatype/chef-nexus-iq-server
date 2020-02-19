@@ -3,7 +3,7 @@
 % February 2, 2020
 
 # NAME
-nexus \- Nexus IQ Server container image
+nexus-iq-server \- Nexus IQ Server container image
 
 # DESCRIPTION
 The nexus iq server image provides a containerized packaging of the Nexus IQ Server.
