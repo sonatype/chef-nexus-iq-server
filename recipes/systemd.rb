@@ -19,5 +19,5 @@ systemd_unit 'nexus-iq-server.service' do
   [Install]
   WantedBy=multi-user.target
   EOU
-  action [:create, :enable, :start]
+  action [:create] + node['nexus_iq_server']['systemd']['actions'].map(&:to_sym)
 end

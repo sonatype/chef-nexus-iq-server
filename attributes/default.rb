@@ -14,6 +14,8 @@ default['nexus_iq_server']['logs_dir'] = '/var/log/nexus-iq-server'
 default['nexus_iq_server']['conf_dir'] = '/etc/nexus-iq-server'
 default['nexus_iq_server']['java_opts'] = ''
 
+default['nexus_iq_server']['systemd']['actions'] = ['enable', 'start']
+
 #
 # default['nexus_iq_server']['config'] is used to generate config.yml. Parameter names and hierarchy must be the same as they
 # are in config.yml.
